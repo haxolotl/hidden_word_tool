@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hidden Word Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 14px;
+        }
+        h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .pattern-section {
+            margin-bottom: 20px;
+        }
+        .pattern-header {
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 8px;
+        }
+        .result-item {
+            margin-left: 20px;
+            margin-bottom: 4px;
+        }
+        .highlight {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .count {
+            color: #666;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .no-results-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .error {
+            color: #cc0000;
+            padding: 20px;
+            border: 1px solid #cc0000;
+            background-color: #fff0f0;
+        }
+    </style>
+</head>
+<body>
+    {% if error %}
+        <div class="error">
+            <strong>Error:</strong> {{ error }}
+        </div>
+    {% elif results and results|length > 0 %}
+        <h2>Hidden word results for "{{ word }}" ({{ total }} occurrences)</h2>
+        {% for pattern, items in results %}
+            <div class="pattern-section">
+                <div class="pattern-header">
+                    Pattern: {{ pattern }} ({{ items|length }} unique phrases)
+                </div>
+                {% for phrase, count in items %}
+                    <div class="result-item">
+                        • {{ phrase|safe }}
+                        {% if count > 1 %}
+                            <span class="count">({{ count }})</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <div class="no-results-title">No hidden word patterns found for "{{ word }}"</div>
+        </div>
+    {% endif %}
+</body>
+</html>

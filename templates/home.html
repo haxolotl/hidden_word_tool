@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hidden Word Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #333; }
+        p { color: #666; }
+        .search-box {
+            margin: 30px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            font-size: 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-hidden {
+            background-color: #0066cc;
+            color: white;
+        }
+        .btn-reversed {
+            background-color: #555;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hidden Word Finder</h1>
+    <p>Find phrases from text corpora where a word is hidden across word boundaries — for cryptic crossword clues.</p>
+
+    <div class="search-box">
+        <input type="text" id="wordInput" placeholder="Enter a word..." autofocus />
+        <div class="buttons">
+            <button class="btn-hidden" onclick="search('hidden')">Hidden</button>
+            <button class="btn-reversed" onclick="search('reversed-hidden')">Reversed Hidden</button>
+        </div>
+    </div>
+
+    <p>Examples: <a href="/hidden?word=THAT">THAT (hidden)</a> · <a href="/reversed-hidden?word=MADE">MADE (reversed hidden)</a></p>
+
+    <script>
+        document.getElementById('wordInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') search('hidden');
+        });
+
+        function search(type) {
+            const word = document.getElementById('wordInput').value.trim();
+            if (!word) return;
+            window.location.href = '/' + type + '?word=' + encodeURIComponent(word);
+        }
+    </script>
+</body>
+</html>
