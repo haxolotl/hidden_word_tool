@@ -9,20 +9,12 @@ CORPUS_DATA = {}
 SEARCH_CACHE = {}
 
 def get_corpus_data():
-    """Load corpus data once at startup as joined text strings"""
+    """Download and load Brown corpus at startup."""
     if not CORPUS_DATA:
         import nltk
-        for name, corpus in [('brown', nltk.corpus.brown),
-                             ('gutenberg', nltk.corpus.gutenberg),
-                             ('reuters', nltk.corpus.reuters),
-                             ('abc', nltk.corpus.abc),
-                             ('webtext', nltk.corpus.webtext)]:
-            CORPUS_DATA[name] = ' '.join(corpus.words())
-            print(f"  Loaded '{name}' ({len(CORPUS_DATA[name]):,} characters)")
-        CORPUS_DATA['all'] = ' '.join(
-            CORPUS_DATA[name] for name in ['brown', 'gutenberg', 'reuters', 'abc', 'webtext']
-        )
-        print(f"  Combined 'all' ({len(CORPUS_DATA['all']):,} characters)")
+        nltk.download('brown', quiet=True)
+        CORPUS_DATA['brown'] = ' '.join(nltk.corpus.brown.words())
+        print(f"  Loaded 'brown' ({len(CORPUS_DATA['brown']):,} characters)")
     return CORPUS_DATA
 
 get_corpus_data()  # Load at startup
@@ -39,7 +31,7 @@ def hidden():
     if not word:
         return render_template('results.html', error="No word provided")
     
-    corpus = request.args.get('corpus', 'all')
+    corpus = request.args.get('corpus', 'brown')
     return render_template('loading.html', word=word, corpus=corpus)
 
 def perform_search(search_word, display_label, cache_key, corpus):
@@ -98,7 +90,7 @@ def perform_search(search_word, display_label, cache_key, corpus):
 @app.route('/hidden/search')
 def hidden_search():
     word = request.args.get('word', '').strip().upper()
-    corpus = request.args.get('corpus', 'all')
+    corpus = request.args.get('corpus', 'brown')
     return perform_search(word, word, f"hidden:{word}:{corpus}", corpus)
 
 
@@ -110,14 +102,14 @@ def reversed_hidden():
     if not word:
         return render_template('results.html', error="No word provided")
 
-    corpus = request.args.get('corpus', 'all')
+    corpus = request.args.get('corpus', 'brown')
     return render_template('loading.html', word=word, corpus=corpus)
 
 
 @app.route('/reversed-hidden/search')
 def reversed_hidden_search():
     word = request.args.get('word', '').strip().upper()
-    corpus = request.args.get('corpus', 'all')
+    corpus = request.args.get('corpus', 'brown')
     reversed_word = word[::-1]
     label = f"{word} (Reversed Hidden: {reversed_word})"
     return perform_search(reversed_word, label, f"rev_hidden:{word}:{corpus}", corpus)
