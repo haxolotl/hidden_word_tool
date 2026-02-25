@@ -17,8 +17,6 @@ def get_corpus_data():
         print(f"  Loaded 'brown' ({len(CORPUS_DATA['brown']):,} characters)")
     return CORPUS_DATA
 
-get_corpus_data()  # Load at startup
-
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -36,6 +34,8 @@ def hidden():
 
 def perform_search(search_word, display_label, cache_key, corpus):
     """Shared search logic for hidden and reversed hidden routes."""
+    get_corpus_data()  # Ensure corpus is loaded
+
     if cache_key in SEARCH_CACHE:
         return render_template('results.html', **SEARCH_CACHE[cache_key])
 
